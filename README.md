@@ -5,6 +5,7 @@ Docker-стек для панели 3x-ui с nginx (stream-мастер «всё
 ## Структура
 
 ```
+├── install.sh                   # Интерактивная установка с GitHub
 ├── docker-compose.yml          # Основной файл стека
 ├── inbound-xray.sh             # Скрипт настройки Xray-инбаундов (на хосте)
 ├── docker/
@@ -19,6 +20,16 @@ Docker-стек для панели 3x-ui с nginx (stream-мастер «всё
 ```
 
 ## Быстрый старт
+
+### Автоматическая установка (рекомендуется)
+
+```bash
+curl -sSL https://raw.githubusercontent.com/aplesovskih/3x-ui-docker/main/install.sh | bash
+```
+
+Скрипт интерактивно запросит IP, домен и порты, создаст `.env` и запустит стек.
+
+### Ручная установка
 
 1. Скопировать и заполнить переменные:
    ```bash
