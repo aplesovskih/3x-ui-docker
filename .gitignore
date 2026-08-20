@@ -1,0 +1,21 @@
+# Memory files
+task_plan.md
+findings.md
+progress.md
+AGENTS.md
+
+# Docker runtime
+/db/
+/cert/
+/letsencrypt/
+/nginx/
+/shm/
+/var/
+*.log
+
+# Environment
+.env
+
+# OS
+.DS_Store
+Thumbs.db

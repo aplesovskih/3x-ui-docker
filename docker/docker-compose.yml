@@ -1,0 +1,62 @@
+services:
+  3xui:
+    image: ghcr.io/mhsanaei/3x-ui:latest
+    container_name: 3x-ui
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ../db:/etc/x-ui
+      - ../cert:/root/cert:ro
+      - ../letsencrypt:/etc/letsencrypt:ro
+      - shm:/dev/shm
+    environment:
+      XRAY_VMESS_AEAD_FORCED: "false"
+      XUI_ENABLE_FAIL2BAN: "true"
+    networks:
+      - proxy-net
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "${STREAM_MASTER_PORT:-443}:443"
+      - "80:80"
+    volumes:
+      - ../nginx:/etc/nginx:rw
+      - ../cert:/root/cert:ro
+      - ../letsencrypt:/etc/letsencrypt:ro
+      - ../var/www/landing:/var/www/landing:ro
+      - shm:/dev/shm
+      - webroot:/var/www/certbot
+    depends_on:
+      - 3xui
+    networks:
+      - proxy-net
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - ../cert:/etc/letsencrypt
+      - webroot:/var/www/certbot
+    networks:
+      - proxy-net
+
+volumes:
+  shm:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: size=64m
+  webroot:
+    driver: local
+
+networks:
+  proxy-net:
+    driver: bridge
