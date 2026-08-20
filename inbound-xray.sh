@@ -541,7 +541,7 @@ external_addr() {
     if [[ -n "$PANEL_HOST" ]]; then printf '%s' "$PANEL_HOST"; else printf '%s' "$SERVER_IP"; fi
 }
 
-# domain_root <домен> — корневой домен без поддомена (p.plesav.ru → plesav.ru).
+# domain_root <домен> — корневой домен без поддомена (panel.example.com → example.com).
 domain_root() {
     local h="${1:-}"
     if [[ "$h" == *.*.* ]]; then
@@ -2520,7 +2520,7 @@ write_panel_conf() {
     nginx_ensure_files
     local snippet_line="    include ${NGINX_SNIPPET};"
     # Второй server-блок для корневого домена (заглушка со своим сертификатом):
-    # при панели на поддомене (p.plesav.ru) корень (plesav.ru) тоже должен
+    # при панели на поддомене (panel.example.com) корень (example.com) тоже должен
     # отвечать правильно, иначе браузер видит чужой сертификат (name error).
     # Включается только в режиме stream-мастера, где оба домена слушает nginx,
     # и только если корневой SNI не занят REALITY/TLS-инбаундом (иначе трафик
@@ -2882,8 +2882,8 @@ create_channel() {
             ;;
     esac
     if [[ "$SECURITY" == "reality" ]]; then
-        # REALITY занимает ОСНОВНОЙ домен (например plesav.ru), а панель при
-        # этом живёт на поддомене (например p.plesav.ru). По умолчанию берём
+        # REALITY занимает ОСНОВНОЙ домен (например example.com), а панель при
+        # этом живёт на поддомене (например panel.example.com). По умолчанию берём
         # основной домен из домена панели, но SNI можно изменить интерактивно.
         # На SNI должна указывать A-запись — он служит SNI маскировки клиента
         # и serverNames инбаунда.
